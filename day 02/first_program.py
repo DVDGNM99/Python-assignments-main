@@ -1,33 +1,31 @@
 #!/usr/bin/env python3
-"""Chiedere al copilot di generare un piccolo programma per calcolare l'area di un rettangolo
-Calcola l'area di un rettangolo:
+"""Small program to calculate the area of a rectangle.
 
-Uso:
- - Interattivo: esegui lo script e inserisci base e altezza quando richiesto.
- - Da riga di comando: python first_program.py <base> <altezza>
+Usage:
+ - Interactive: run the script and enter base and height when prompted.
+ - From command line: python first_program.py <base> <height>
 
-Il programma accetta numeri con la virgola o il punto come separatore decimale
-e verifica che i valori siano positivi.
+The program accepts numbers using either comma or dot as decimal separator
+and validates that values are positive.
 """
+import os
 import sys
 import tkinter as tk
 from tkinter import messagebox
 
+# Ensure the repository root (parent of this file) is on sys.path so
+# `common_utils.py` located in the repository root can be imported when
+# running the script directly from the `day 02` folder.
+SCRIPT_DIR = os.path.dirname(__file__)
+REPO_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, os.pardir))
+if REPO_ROOT not in sys.path:
+	sys.path.insert(0, REPO_ROOT)
+
+from common_utils import parse_positive_number
+
 
 def area_rettangolo(base: float, altezza: float) -> float:
 	return base * altezza
-
-
-def parse_positive_number(s: str) -> float:
-	try:
-		# Sostituisco la virgola con il punto per l'input italiano comune
-		v = float(s.replace(',', '.'))
-	except Exception:
-		raise ValueError(f"'{s}' non è un numero valido")
-	if v <= 0:
-		raise ValueError("Il valore deve essere maggiore di zero")
-	return v
-
 
 def main() -> None:
 	# Se vengono passati due argomenti, mantengo la modalità CLI per compatibilità
