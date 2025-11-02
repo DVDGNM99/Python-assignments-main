@@ -1,6 +1,9 @@
 # Notes Lecture 2
-assignment: copiare nel readme di dove usi L'AI (repo) versione di chatgpt e prompt usato per generare il compito.
+## assignment: 
+1.copiare nel readme di dove usi L'AI (repo) versione di chatgpt e prompt usato per generare il compito.
 
-
-## fornire un piccolo dataset dei miei dati che devo analizzare- da fornire in modo da poterli analizzare
+2.fornire un piccolo dataset dei miei dati che devo analizzare- da fornire in modo da poterli analizzare
+## note
+- diff tra float numbers and integer numbers 
+- __name__ (double underscore) è una variabile speciale interna di python con cui si riferisce al codice, __name__ ==__main__ quando è per fare run e basta mentre sostituendo __name__ ==__nomefile__ funziona per avere uno script.py delle funzioni in modo che possano essere riutilizzate da altri programmi che scrivo
 
