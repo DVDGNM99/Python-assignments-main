@@ -4,7 +4,7 @@
 
 2. fornire un piccolo dataset dei miei dati che devo analizzare- da fornire in modo da poterli analizzare
 
-3. 
+3. fai lo stesso programma per un cerchio o per un'altra cosa utile per la ricerca
 
 
 ## note
