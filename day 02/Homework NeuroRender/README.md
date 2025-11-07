@@ -1,5 +1,7 @@
 # BrainGlobe Render Environment
 
+![imagine](https://github.com/DVDGNM99/Python-assignments-main/blob/main/Screenshot%202025-11-07%20173958.png)
+![imagine](https://github.com/DVDGNM99/Python-assignments-main/blob/main/Screenshot%202025-11-07%20174726.png)
 ## Environment name
 `brainglobe_render`
 
@@ -32,29 +34,25 @@ It is configured as a lightweight, stable environment that focuses on rendering 
 
 Create the environment from scratch (using Miniforge or Mambaforge):
 
-- (bash)
-mamba create -n brainglobe_render -c conda-forge python=3.10 brainglobe-atlasapi pyqt vtk vedo numpy -y
-mamba activate brainglobe_render
-pip install brainrender brainglobe-space morphapi brainglobe-utils pyvista k3d pytables
-
-### in alternative: if the enviroment.yml is present
+### use file: enviroment.yml 
 - (bash)
 mamba env create -f environment.yml
 
-## sanity check
-python -c "import brainrender, brainglobe_atlasapi; print('brainrender:', brainrender.__version__, '| atlasapi:', brainglobe_atlasapi.__version__)"
 
 ## Maintenance and updates
-mamba activate brainglobe_render
-mamba update -c conda-forge vtk vedo pyqt brainglobe-atlasapi -y
-pip install --upgrade brainrender morphapi brainglobe-utils
-**Avoid upgrading vtk beyond version 9.5.1, since newer builds may cause incompatibilities with brainrender.**
+1. mamba activate brainglobe_render
+2. mamba update -c conda-forge vtk vedo pyqt brainglobe-atlasapi -y
+3. pip install --upgrade brainrender morphapi brainglobe-utils
+- Avoid upgrading vtk beyond version 9.5.1, since newer builds may cause incompatibilities with brainrender.
 
-# important for future self
+# Important for future self
 - this env can later be extended to include the full BrainGlobe suite (cellfinder, brainreg, etc.) if required for volumetric analysis.
 
 - All dependencies are sourced from conda-forge for maximum compatibility and stability.
+- regions.json file includes all the brain areas in the ARA dictionary. not all of them will work with biorender. I suggest trying with some standard areas such as: MOs, VISp, ACA, TH, APN.
+  in alternative rename the file regions_partial.json in regions.json to have a simplified list in the GUI
 
-# GUI script
-regions.json file includes all the brain areas in the ARA dictionary. not all of them will work with biorender. I suggest trying with some standard areas such as: MOs, VISp, ACA, TH, APN
-## in alternative rename the file regions_partial.json in regions.json to have a simplified list in the GUI
+  ## Tools
+  - Chatgpt version 5 was used to troubleshoot and for the creation on the enviroment
+  
+  
