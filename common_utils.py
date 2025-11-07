@@ -1,19 +1,19 @@
-"""Utility condivise usate dagli script didattici.
+"""Shared utilities used by the educational scripts.
 
-Contiene funzioni riutilizzabili come `parse_positive_number` per evitare duplicazione.
+Contains reusable functions such as `parse_positive_number` to avoid duplication.
 """
 from __future__ import annotations
 
 
 def parse_positive_number(s: str) -> float:
-    """Parsa una stringa in numero float accettando ',' o '.' come separatore.
+    """Parses a string into a float number, accepting either ',' or '.' as the decimal separator.
 
-    Solleva ValueError se la stringa non è un numero valido o se il valore è <= 0.
+    Raises ValueError if the string is not a valid number or if the value is <= 0.
     """
     try:
         v = float(s.replace(',', '.'))
     except Exception:
-        raise ValueError(f"'{s}' non è un numero valido")
+        raise ValueError(f"'{s}' is not a valid number")
     if v <= 0:
-        raise ValueError("Il valore deve essere maggiore di zero")
+        raise ValueError("The value must be greater than zero")
     return v

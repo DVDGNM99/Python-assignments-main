@@ -1,14 +1,18 @@
-# Notes Lecture 2
-## assignment: 
-1. copiare nel readme di dove usi L'AI (repo) versione di chatgpt e prompt usato per generare il compito.
+# Notes Lecture 2 for personal use
+## Assignment:
 
-2. fornire un piccolo dataset dei miei dati che devo analizzare- da fornire in modo da poterli analizzare
+Copy into the README (in the repo where you use the AI) the version of ChatGPT and the prompt used to generate the assignment.
 
-3. fai lo stesso programma per un cerchio o per un'altra cosa utile per la ricerca
+Provide a small dataset of my data that I need to analyze — to be supplied so it can be analyzed.
 
+Create the same program for a circle or for another object useful for research.
 
-## note
-- diff tra float numbers and integer numbers 
-- __name__ (double underscore) è una variabile speciale interna di python con cui si riferisce al codice, __name__ ==__main__ quando è per fare run e basta mentre sostituendo __name__ ==__nomefile__ funziona per avere uno script.py delle funzioni in modo che possano essere riutilizzate da altri programmi che scrivo
-- indentation error: ci sono delle colonne che racchiudono altre funzioni soprattutto con i boolean. si chiamano blocchi
-- pass o ... servono in uno script per completare un azione che è ancora in manutenzione (lavoro in corso) 
+# Notes
+
+Difference between float numbers and integer numbers.
+
+__name__ (double underscore) is a special internal Python variable that refers to the code. __name__ == "__main__" is used when running the script directly, while replacing it with __name__ == "__filename__" allows the .py script to be used as a module so its functions can be reused in other programs I write.
+
+Indentation error: there are code columns that contain other functions, especially with booleans. These are called blocks.
+
+pass or ... are used in a script to complete an action that is still under development (work in progress).
