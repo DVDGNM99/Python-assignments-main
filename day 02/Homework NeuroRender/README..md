@@ -37,11 +37,11 @@ mamba create -n brainglobe_render -c conda-forge python=3.10 brainglobe-atlasapi
 mamba activate brainglobe_render
 pip install brainrender brainglobe-space morphapi brainglobe-utils pyvista k3d pytables
 
-### in alternative:
+### in alternative: if the enviroment.yml is present
 - (bash)
 mamba env create -f environment.yml
 
-## check
+## sanity check
 python -c "import brainrender, brainglobe_atlasapi; print('brainrender:', brainrender.__version__, '| atlasapi:', brainglobe_atlasapi.__version__)"
 
 ## Maintenance and updates
@@ -50,19 +50,11 @@ mamba update -c conda-forge vtk vedo pyqt brainglobe-atlasapi -y
 pip install --upgrade brainrender morphapi brainglobe-utils
 **Avoid upgrading vtk beyond version 9.5.1, since newer builds may cause incompatibilities with brainrender.**
 
-## recommended repo structure:
-NeuroRender/
-│
-├── test/
-│   ├── test_bg_render.py
-│   ├── test_bridge.py
-│   └── test_allen_sdk.py
-│
-├── data/                 # atlases, datasets, or output files
-├── analysis/             # analysis scripts or notebooks
-├── README.md             # this file
-└── environment.yml       # (optional) environment definition file
 # important for future self
 - this env can later be extended to include the full BrainGlobe suite (cellfinder, brainreg, etc.) if required for volumetric analysis.
 
 - All dependencies are sourced from conda-forge for maximum compatibility and stability.
+
+# GUI script
+regions.json file includes all the brain areas in the ARA dictionary. not all of them will work with biorender. I suggest trying with some standard areas such as: MOs, VISp, ACA, TH, APN
+## in alternative rename the file regions_partial.json in regions.json to have a simplified list in the GUI

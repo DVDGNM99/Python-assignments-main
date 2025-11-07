@@ -3,8 +3,8 @@
 GUI app (Tkinter) for selecting multiple brain regions and rendering them in BrainRender.
 
 How it works:
-- Reads "regions.json" from the same folder (mapping ACRONYM -> Full Name).
-- Each row shows a dropdown ("ACRONYM — Full Name"). Click the + button to add more rows.
+- Reads "regions.json" from the same folder (mapping ACRONYM -> Full Name). not all the brain areas in the json can be used some standard ones are: MOs, VISp, ACA, TH, APN
+- Each row shows a dropdown ("ACRONYM — Full Name"). Click the + button to add more rows, and - to eliminate them.
 - Click "Render" to open the 3D BrainRender window with all selected regions.
 
 If "regions.json" is missing or empty, the script will auto-build a list from the atlas
