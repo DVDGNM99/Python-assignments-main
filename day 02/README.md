@@ -23,12 +23,6 @@ An interactive environment that reads user commands, evaluates them, and prints 
 It is the mode used when typing directly into the Python interpreter or a Jupyter Notebook.  
 This approach is useful for testing and quick exploration.
 
----
-
-## Folder Structure
-
-- in_class_exercises/ – Scripts and notebooks created during the lesson.  
-- homework/ – Assignments and additional practice problems to complete independently.
 
 ---
 
