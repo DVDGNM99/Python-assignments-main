@@ -9,110 +9,105 @@ The project will provide three separate runnable files that all display identica
 
 3. CLI app — uses command-line arguments.
 ---
-## 1. Project Goals
 
+## 1. Project Goals
 - Query and visualize brain regions from the **Allen Mouse Brain Atlas** via **BrainGlobe**.  
-- Allow three different input modes (GUI, REPL, CLI) with consistent outputs.  
-- Provide an **ARA region dropdown menu** in the GUI for easy selection.  
-- Cache downloaded data and track used regions in a local JSON manifest.  
-- Keep the design modular for future extensions (e.g., new species or atlases).
+- Support three input modes (GUI, REPL, CLI) with consistent logic and output.  
+- Provide an ARA region dropdown menu in the GUI for easier user interaction.  
+- Cache downloaded data and store previously used regions in a JSON manifest.  
+- Maintain a modular structure for future extensions (e.g., other species or atlases).  
 
 ---
 
 ## 2. Tech Stack and Dependencies
 
-**Core libraries**
-- `brainglobe-atlasapi` — load/query Allen Mouse Brain Atlas data.  
-- `brainrender` — visualize 3D brain regions.  
-- `tkinter` — GUI toolkit (bundled with Python).  
-- `argparse` — for CLI argument parsing.  
-- `numpy`, `pandas` — light data processing.  
-- `json` — for the manifest.
+### Core Libraries
+- **brainglobe-atlasapi** — load and query the Allen Mouse Brain Atlas.  
+- **brainrender** — 3D visualization of brain regions.  
+- **tkinter** — built-in GUI toolkit.  
+- **argparse** — command-line argument parsing.  
+- **numpy**, **pandas** — lightweight data processing.  
+- **json** — manifest and cache management.
 
-**Optional**
-- `pydantic` — for manifest schema validation.  
-- `allensdk` — for more advanced queries from the Allen Brain Atlas.
+### Optional Libraries
+- **pydantic** — schema validation for manifests.  
+- **allensdk** — advanced querying from the Allen Brain Atlas.
 
 ---
 
 ## 3. Environment Setup
 
-(Bash)
-1. Create and activate an environment
-mamba create -n mouse-brain python=3.11 -y
-mamba activate mouse-brain
+To prevent dependency conflicts between libraries (particularly different **numpy** versions required by `brainrender` and `allensdk`), the project uses **two separate virtual environments**:
 
-2. Install dependencies
-pip install brainglobe-atlasapi brainrender numpy pandas
-pip install allensdk pydantic
+- One environment, named **brainrender-env**, is dedicated to visualization and BrainGlobe tools.  
+- A second environment, named **allensdk-env**, is used for data queries and analysis using the AllenSDK.  
+
+Each script will be designed to automatically activate the correct environment before execution, ensuring stable compatibility and preventing version errors.
 
 ---
 
-## 4. Environment Setup
+## 4. Directory Structure
 
-mouse-brain-areas-viewer/
-├─ README.md
-├─ requirements.txt
-├─ data/
-│  ├─ cache/                     # BrainGlobe atlas cache
-│  └─ manifests/
-│     └─ areas_manifest.json     # stores previously requested regions
-├─ src/
-│  ├─ core/
-│  │  ├─ atlas_io.py             # load atlas, get ARA region names
-│  │  ├─ normalize.py            # normalize user text to ARA IDs
-│  │  └─ visualize.py            # brainrender 3D plotting
-│  ├─ apps/
-│  │  ├─ gui_app.py              # GUI (with dropdown + text input)
-│  │  ├─ repl_app.py             # REPL (input())
-│  │  └─ cli_app.py              # CLI (argparse)
-│  └─ config.py                  # configuration (atlas, paths, cache)
-└─ tests/
-   └─ test_end_to_end.py
+All project files are contained within the directory:  
+`C:\Users\David\OneDrive\Desktop\Python-assignments-main\day 02\Homework NeuroRender`
+
+Inside that directory, the structure should be:
+
+Homework NeuroRender/
+  README.md
+  requirements.txt
+  data/
+    cache/                     # BrainGlobe atlas cache
+    manifests/
+      areas_manifest.json      # stores requested regions and metadata
+  src/
+    core/
+      atlas_io.py              # load atlas and retrieve ARA region names
+      normalize.py             # normalize user input to ARA IDs
+      visualize.py             # brainrender 3D plotting
+    apps/
+      gui_app.py               # GUI interface (dropdown + text input)
+      repl_app.py              # interactive REPL interface
+      cli_app.py               # command-line interface
+    config.py                  # general configuration and environment setup
+  tests/
+    test_end_to_end.py
+
 
 ### Automatically Creating the Folder Structure (using miniforge prompt)
 
-You can quickly create the **entire project directory tree** described in section 4 using a few terminal commands.  
+create the **entire project directory tree** described in section 4 using a few terminal commands.  
 This ensures a clean, consistent layout before you start coding.
 
 
 ---
 
-## 5. The ARA Region Dropdown (GUI)
+## 5. GUI Design
 
-Data Source:
+The GUI (built with `tkinter`) provides:  
+- A dropdown menu populated with all ARA region names.  
+- Manual input for additional regions.  
+- Buttons for:
+  - **Render** — visualize the selected regions.  
+  - **Clear** — reset input and selections.  
+- A small status area showing region IDs, errors, or logs.
 
-## The Allen Reference Atlas (ARA) provides hierarchical brain region names like:
-
-- Primary visual area (VISp)
-
-- Primary motor area (MOp)
-
-- Hippocampal region (HIP)
-
-load them directly from BrainGlobe-> 
-
-### GUI Design
-
-A dropdown menu (tkinter.OptionMenu or Combobox) lists all ARA region names.
-
-- Users can:
-
-1. Select one or more regions from the dropdown.
-
-2. Type region names manually in a text box.
-
-- Buttons:
-
-1. Render → visualize the selected regions.
-
-2. Clear → reset selection.
-
-3. A small status panel displays selected region IDs and any errors.
 ---
+
 ## 6. Manifest and Caching
 
-### Manifest File
-`data/manifests/areas_manifest.json` keeps track of all previously requested brain regions, their usage, and metadata.  
+### Manifest
+The file `data/manifests/areas_manifest.json` keeps track of all previously visualized brain regions and related metadata.
+
+### Caching
+Downloaded atlas data are stored locally in `data/cache/` for faster access during subsequent runs.
+
+---
+
+## 7. Automation and Environment Switching
+
+Each main script (GUI, CLI, and REPL) will automatically activate the appropriate virtual environment before running the main logic.  
+This ensures compatibility with the required dependencies and isolates visualization code from data-querying modules.
+
 ---
 All three interfaces (GUI, REPL, CLI) rely on the same backend, ensuring identical results.
