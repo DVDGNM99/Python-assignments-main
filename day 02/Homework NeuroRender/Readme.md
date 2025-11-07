@@ -9,6 +9,7 @@ The project will provide three separate runnable files that all display identica
 
 3. CLI app — uses command-line arguments.
 ---
+# Roadmap
 
 ## 1. Project Goals
 - Query and visualize brain regions from the **Allen Mouse Brain Atlas** via **BrainGlobe**.  
@@ -111,3 +112,4 @@ This ensures compatibility with the required dependencies and isolates visualiza
 
 ---
 All three interfaces (GUI, REPL, CLI) rely on the same backend, ensuring identical results.
+

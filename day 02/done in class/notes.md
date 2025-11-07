@@ -16,3 +16,8 @@ __name__ (double underscore) is a special internal Python variable that refers t
 Indentation error: there are code columns that contain other functions, especially with booleans. These are called blocks.
 
 pass or ... are used in a script to complete an action that is still under development (work in progress).
+---
+
+- from first_program import rectangle_area (function)
+in this way I can import the functions defined in first_program.py
+---
