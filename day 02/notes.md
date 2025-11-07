@@ -1,4 +1,4 @@
-# Notes Lecture 2
+# Notes Lecture 2 for personal use
 ## Assignment:
 
 Copy into the README (in the repo where you use the AI) the version of ChatGPT and the prompt used to generate the assignment.
