@@ -10,15 +10,12 @@
 
 ```python
 # this is code:
-for word in words:
-    # If the word is not in the dictionary
-    if word not in word_list:
-        # Find the closest match
-        suggestion = get_close_matches(word, word_list, n=1, cutoff=0.6)
-        if suggestion:
-            print(f"❌ '{word}' not found. Did you mean '{suggestion[0]}'?")
-        else:
-            print(f"❌ '{word}' not found. No suggestion available.")
-    else:
-        print(f"✅ '{word}' is correct.")
+for n in range (0, 4):
+ print (n)
+#this is a list
+frutti = ["apple", "ananas", "dog"]
+# this creates a list of zeros that are as may as characters in len (in the example len was a word)
+[0] * (len+1)
+# to create a matrix 
+[0] * (len+1) for _ in range (len1 +1)
 ```
