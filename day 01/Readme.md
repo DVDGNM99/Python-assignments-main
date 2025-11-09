@@ -1,4 +1,4 @@
 - Version AI: Chatgpt 5 web version
 - Prompt: transform my MD file into a professional web page about my achievements and cv
-- Link website: https://dvdgnm99.github.io/
-- Lik repo: https://github.com/DVDGNM99/DVDGNM99.github.io
+- [Link website](https://dvdgnm99.github.io/)
+- [Lik repo: https](//github.com/DVDGNM99/DVDGNM99.github.io)
