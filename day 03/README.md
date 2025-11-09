@@ -7,7 +7,8 @@
 5. create a spellchecker (create a list of words and compare, if a word isnt included then is a typo and referes to the closest word to the one typed)
 6. open a couple of project on my PC
 7. methos of strings (look up what it means exactly, for example string.lower)-> look: string methods in python. in this case lower can trasform Capital letters in a word into lowercase letters
-
+---
+## how to visualize code in MD
 ```python
 # this is code:
 for n in range (0, 4):
@@ -19,3 +20,7 @@ frutti = ["apple", "ananas", "dog"]
 # to create a matrix 
 [0] * (len+1) for _ in range (len1 +1)
 ```
+---
+
+8. how to check that spellcheck works in the correct way: 
+9. list are changeble while touple is unchangable 
