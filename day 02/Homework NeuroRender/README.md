@@ -1,4 +1,4 @@
-# BrainGlobe Render Environment
+# NeuroRender
 ---
 ## Example images
 ![imagine](https://github.com/DVDGNM99/Python-assignments-main/blob/main/Screenshot%202025-11-07%20173958.png)
@@ -8,6 +8,18 @@
 `brainglobe_render`
 ---
 This environment is dedicated to **3D visualization and anatomical analysis of the mouse brain** using the **BrainGlobe ecosystem**.  
+---
+## How to use it
+1. Copy the repo in your pc
+2. Follow the guide below to create an env (installation, create an environment)
+3. Open HW_GUI_input
+4. Select the kernel in VScode (activate the env)
+5. Press the run button, in the upper right side of the code
+6. Wait... for first time activation it may take few minutes
+7. A GUI will open, in the white rectangle, select the brain area and color. You may add as many rectangles as you want with the + button and delete them using -
+8. Press Render
+9. Enjoy!
+
 ---
 ## Installation, Create an environment:
 - Download Anaconda/ Miniforge/ Miniconda/ Mamba (one of them is enough)
