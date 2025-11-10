@@ -3,24 +3,6 @@
 This folder contains the scripts and notes from the second Python lesson at the Weizmann Institute.  
 The main topic covered in this session was how different types of input can be provided to Python programs.
 
----
-
-## Lesson Content
-
-We explored three main modes of interaction between the user and a Python script:
-
-### 1. CLI (Command Line Interface)
-
-
-### 2. GUI (Graphical User Interface)
-
-
-### 3. REPL (Read–Eval–Print Loop)
-
-
-
----
-
 ## Homework Project: NeuroRender
 ![imagine](https://github.com/DVDGNM99/Python-assignments-main/blob/main/Screenshot%202025-11-07%20173958.png)
 ![imagine](https://github.com/DVDGNM99/Python-assignments-main/blob/main/Screenshot%202025-11-07%20174726.png)
