@@ -1,4 +1,4 @@
-# NeuroRender
+# NeuroRender Guide
 ---
 ## Example images
 ![imagine](https://github.com/DVDGNM99/Python-assignments-main/blob/main/Screenshot%202025-11-07%20173958.png)
