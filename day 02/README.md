@@ -3,7 +3,7 @@
 This folder contains the scripts and notes from the second Python lesson at the Weizmann Institute.  
 The main topic covered in this session was how different types of input can be provided to Python programs.
 
-## Homework Project: NeuroRender
+## Homework Project: NeuroRender. for the complete guide check the README file inside "Homework NeuroRender"
 ![imagine](https://github.com/DVDGNM99/Python-assignments-main/blob/main/Screenshot%202025-11-07%20173958.png)
 ![imagine](https://github.com/DVDGNM99/Python-assignments-main/blob/main/Screenshot%202025-11-07%20174726.png)
 For the homework, I developed a small program called NeuroRender, which allows the user to visualize selected brain regions from the ARA atlas.
