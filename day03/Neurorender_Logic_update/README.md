@@ -1,6 +1,6 @@
 # Neurorender Logic Update – day03
 ---
-Objective
+**Objective**:
 
 This project refactors the day02 GUI script by separating the business logic (region loading, validation, color management) from rendering and the user interface.
 This makes the code:
@@ -12,6 +12,7 @@ More robust and maintainable
 Easier to extend
 ---
 # Project structure:
+```text
 Neurorender_logic_update/
 ├── App/
 │   ├── __init__.py
@@ -26,6 +27,7 @@ Neurorender_logic_update/
 ├── regions.json        → example region file
 ├── environment.yml     → updated conda environment
 └── README.md           → this file
+```
 ---
 # Changes from the Original Script
 Role Separation
