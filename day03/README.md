@@ -1,4 +1,5 @@
 # Neurorender Logic Update – day03
+for additional informations and explanation [click here](https://github.com/DVDGNM99/Python-assignments-main/blob/main/day02/Homework%20NeuroRender/README.md)
 ---
 **Objective**:
 
