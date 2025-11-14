@@ -6,11 +6,12 @@ for additional informations and explanation [click here](https://github.com/DVDG
 This project refactors the day02 GUI script by separating the business logic (region loading, validation, color management) from rendering and the user interface.
 This makes the code:
 
-Testable without opening the GUI
+- Testable without opening the GUI
 
-More robust and maintainable
+- More robust and maintainable
 
-Easier to extend
+- Easier to extend
+
 ---
 # Project structure:
 ```text
