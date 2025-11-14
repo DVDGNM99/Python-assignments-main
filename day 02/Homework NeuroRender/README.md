@@ -1,8 +1,8 @@
 # NeuroRender Guide
 ---
 ## Example images
-![imagine](https://github.com/DVDGNM99/Python-assignments-main/blob/main/Screenshot%202025-11-07%20173958.png)
-![imagine](https://github.com/DVDGNM99/Python-assignments-main/blob/main/Screenshot%202025-11-07%20174726.png)
+![imagine](https://github.com/DVDGNM99/Python-assignments-main/blob/main/Images/Screenshot%202025-11-07%20173958.png)
+![imagine](https://github.com/DVDGNM99/Python-assignments-main/blob/main/Images/Screenshot%202025-11-07%20174726.png)
 ---
 ## Environment name
 `brainglobe_render`
