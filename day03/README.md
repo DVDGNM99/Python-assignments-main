@@ -106,7 +106,7 @@ conda env create -f environment.yml
 
 3. Activate the environment before running any part of the project:
 conda activate brainglobe_render
-** for more info [click here](https://github.com/DVDGNM99/Python-assignments-main/tree/main/day02/Homework%20NeuroRender#installation-create-an-environment).** 
+for more info [click here](https://github.com/DVDGNM99/Python-assignments-main/blob/main/day02/Homework%20NeuroRender/README.md#installation-create-an-environment). 
 Once the environment is active, all commands (GUI, CLI, and tests) will have access to the necessary dependencies.
 ---
 # Running the GUI
