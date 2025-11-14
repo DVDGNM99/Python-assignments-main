@@ -85,6 +85,7 @@ All logic can now be tested without opening the GUI or downloading an atlas.
 This ensures correctness while keeping tests fast and independent of external libraries.
 
 Overall, the refactor transforms the original script into a modular, maintainable, and professional tool.
+
 ---
 # Software requirements
 
@@ -141,6 +142,7 @@ python -m App.cli render-regions MOs,VISp,ACA --atlas allen_mouse_25um --alpha 0
 This command launches brainrender, builds the scene, and displays only the listed regions using the given transparency value.
 
 The CLI is ideal for automation, quick testing, or running on systems without a desktop environment.
+
 ---
 # Running Tests
 ```
