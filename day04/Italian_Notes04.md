@@ -25,3 +25,7 @@ except
 # da cosa differisce con il loop IF
 ```
 - dictionaries come creare (hanno kew value pairs), e in cosa sono differenti rispetto alle liste
+
+## assignment
+- prendi un database (es chembl) e scrivi un programma (con main separato, uno per l'interazione con l'user e uno per il database) 
+- importante fai in modo che l'email e la chiave API sia in un file separato che non viene portato su github
