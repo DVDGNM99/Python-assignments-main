@@ -1,153 +1,154 @@
 # placeholder IO utilities
 # src/io_utils.py
+# src/io_utils.py
 from __future__ import annotations
-from pathlib import Path
-from typing import Dict, Any, Optional
+
 import json
-import csv
+import os
+from datetime import datetime
+from typing import Any, Dict, Iterable, Optional
 
-from src.rdkit_utils import smiles_to_sdf
+from .rdkit_utils import smiles_to_sdf
 
-# --- FS helpers --------------------------------------------------------------
+# Try to import your dataclasses, but keep the code robust if fields differ
+try:
+    from .models import Result  # type: ignore
+except Exception:
+    Result = object  # fallback for type checkers
 
-def ensure_dir(path: Path) -> None:
-    path.mkdir(parents=True, exist_ok=True)
-
-def write_json(data: Dict[str, Any], path: Path) -> None:
-    ensure_dir(path.parent)
-    with path.open("w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2, ensure_ascii=False)
-
-def write_csv(rows: Dict[str, Any] | list[Dict[str, Any]], path: Path) -> None:
-    ensure_dir(path.parent)
-    if isinstance(rows, dict):
-        # write a single-row CSV
-        rows = [rows]
-    if not rows:
-        # nothing to write
-        write_json({"warning": "no rows"}, path.with_suffix(".json"))
-        return
-    fieldnames = sorted({k for r in rows for k in r.keys()})
-    with path.open("w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
-        writer.writeheader()
-        for r in rows:
-            writer.writerow(r)
-
-# --- PubChem adapter ---------------------------------------------------------
-
-def get_pubchem_metadata(smiles: str) -> Dict[str, Any]:
-    """
-    Adapter to call whatever function your pubchem.py exposes.
-    Must return a dict with keys like: cid, iupac_name, molecular_formula, melting_point, etc.
-    This tries common function names to avoid tight coupling.
-    """
-    try:
-        from src import pubchem as _pc  # local module
-    except Exception:
-        return {}
-
-    # Try several likely API shapes without crashing the pipeline.
-    for fn_name in (
-        "fetch_pubchem_by_smiles",
-        "fetch_properties_by_smiles",
-        "get_by_smiles",
-        "get_properties",
-        "resolve_smiles",
-    ):
-        fn = getattr(_pc, fn_name, None)
-        if callable(fn):
-            try:
-                data = fn(smiles)  # expected to be a dict-like
-                if isinstance(data, dict):
-                    return data
-            except Exception:
-                pass
-
-    # As a last resort, try a generic 'search' returning a list
-    fn = getattr(_pc, "search_by_smiles", None)
-    if callable(fn):
-        try:
-            res = fn(smiles)
-            if isinstance(res, list) and res:
-                return res[0] if isinstance(res[0], dict) else {}
-        except Exception:
-            pass
-
-    return {}
-
-# --- Naming helpers ----------------------------------------------------------
 
 def safe_name(text: str) -> str:
-    """Create a filesystem-friendly name (Windows-safe)."""
-    invalid = '<>:"/\\|?*'
-    out = "".join("_" if c in invalid else c for c in text.strip())
-    return out or "compound"
-
-# --- Main pipeline -----------------------------------------------------------
-
-def build_outputs(
-    smiles: str,
-    results_dir: Path,
-    preferred_name: Optional[str] = None,
-    num_confs: int = 1,
-    random_seed: int = 0xF00D,
-) -> Dict[str, Any]:
     """
-    High-level pipeline:
-    1) Fetch PubChem metadata from SMILES
-    2) Generate 3D SDF with RDKit and attach metadata as SD fields
-    3) Save JSON and CSV summaries
-
-    Returns a manifest dict with useful paths and metadata.
+    Make a filesystem-safe name (folders/files).
     """
-    metadata = get_pubchem_metadata(smiles) or {}
+    unsafe = r'<>:"/\\|?*'
+    cleaned = "".join("_" if c in unsafe else c for c in str(text)).strip()
+    return cleaned or "unnamed"
 
-    # Determine compound folder name
-    base_name = preferred_name or metadata.get("iupac_name") or metadata.get("cid") or smiles
-    compound_name = safe_name(str(base_name))
-    compound_dir = results_dir / compound_name
-    ensure_dir(compound_dir)
 
-    # Write SDF with properties
-    sdf_path = compound_dir / "structure.sdf"
-    props = {
-        "smiles": smiles,
-        **metadata,  # cid, iupac_name, molecular_formula, melting_point, etc. (if available)
+def _result_folder_name(result: Any) -> str:
+    """
+    Prefer IUPAC name; otherwise use a shortened SMILES.
+    """
+    iupac = getattr(result, "iupac_name", None)
+    if iupac:
+        return safe_name(iupac)
+
+    smi = getattr(result, "input_smiles", "") or ""
+    smi = smi if len(smi) <= 40 else smi[:40] + "..."
+    return safe_name(smi or "compound")
+
+
+def _ensure_dir(path: str) -> None:
+    os.makedirs(path, exist_ok=True)
+
+
+def _coerce_sources(sources: Any) -> Dict[str, str]:
+    """
+    Normalize sources to a dict[str, str].
+    Accepts dict, list, str, or None.
+    """
+    if isinstance(sources, dict):
+        return {str(k): str(v) for k, v in sources.items()}
+    if isinstance(sources, (list, tuple)):
+        return {f"source_{i+1}": str(v) for i, v in enumerate(sources)}
+    if isinstance(sources, str):
+        return {"source": sources}
+    return {}
+
+
+def _iter_melting_points(mps: Optional[Iterable[Any]]) -> Iterable[Dict[str, Any]]:
+    """
+    Convert melting point objects/rows into a uniform dict form.
+    Handles both text and numeric values, with optional unit/source/notes.
+    """
+    if not mps:
+        return []
+
+    out = []
+    for mp in mps:
+        # Try common attribute names; fall back to dict-style access
+        value = getattr(mp, "value", None)
+        unit = getattr(mp, "unit", None)
+        source = getattr(mp, "source", None)
+        notes = getattr(mp, "notes", None)
+        source_url = getattr(mp, "source_url", None)
+
+        if isinstance(mp, dict):
+            value = mp.get("value", value)
+            unit = mp.get("unit", unit)
+            source = mp.get("source", source)
+            notes = mp.get("notes", notes)
+            source_url = mp.get("source_url", source_url)
+
+        # Coerce value to string (MVP keeps free text like "134–136 °C")
+        if value is None:
+            value_str = ""
+        else:
+            value_str = str(value)
+
+        out.append(
+            {
+                "value": value_str,
+                "unit": "" if unit is None else str(unit),
+                "source": "PubChem" if source is None else str(source),
+                "notes": None if notes is None else str(notes),
+                "source_url": None if source_url is None else str(source_url),
+            }
+        )
+    return out
+
+
+def write_outputs(result: Any, base_dir: str = "results") -> str:
+    """
+    Create results/<CompoundName>/ and write:
+      - metadata.json   (rich, machine-friendly)
+      - IUPAC.txt       (plain text)
+      - melting_point.csv
+      - structure.sdf   (with minimal properties)
+    Returns the absolute path to the created folder.
+    """
+    folder_name = _result_folder_name(result)
+    out_dir = os.path.abspath(os.path.join(base_dir, folder_name))
+    _ensure_dir(out_dir)
+
+    # Metadata
+    created_at = getattr(result, "created_at", None)
+    if not created_at:
+        created_at = datetime.utcnow().isoformat() + "Z"
+
+    metadata = {
+        "created_at": created_at,
+        "input_smiles": getattr(result, "input_smiles", ""),
+        "cid": getattr(result, "cid", None),
+        "iupac_name": getattr(result, "iupac_name", None),
+        "sources": _coerce_sources(getattr(result, "sources", None)),
+        "melting_points": list(_iter_melting_points(getattr(result, "melting_points", None))),
+        "errors": getattr(result, "errors", None),
     }
-    smiles_to_sdf(
-        smiles=smiles,
-        output_path=sdf_path,
-        props=props,
-        num_confs=num_confs,
-        random_seed=random_seed,
-    )
 
-    # Write metadata files
-    json_path = compound_dir / "metadata.json"
-    write_json(props, json_path)
+    with open(os.path.join(out_dir, "metadata.json"), "w", encoding="utf-8") as f:
+        json.dump(metadata, f, indent=2, ensure_ascii=False)
 
-    # Optional: a flat CSV with the main properties (present if provided by PubChem)
-    csv_row = {
-        "name": compound_name,
-        "smiles": smiles,
-        "cid": metadata.get("cid"),
-        "iupac_name": metadata.get("iupac_name"),
-        "molecular_formula": metadata.get("molecular_formula"),
-        "molecular_weight": metadata.get("molecular_weight"),
-        "melting_point": metadata.get("melting_point"),
+    # IUPAC.txt
+    with open(os.path.join(out_dir, "IUPAC.txt"), "w", encoding="utf-8") as f:
+        f.write(str(getattr(result, "iupac_name", "") or ""))
+
+    # melting_point.csv
+    csv_path = os.path.join(out_dir, "melting_point.csv")
+    with open(csv_path, "w", encoding="utf-8") as f:
+        f.write("source,value,unit,notes,source_url\n")
+        for row in metadata["melting_points"]:
+            notes = "" if row["notes"] is None else row["notes"].replace("\n", " ").strip()
+            source_url = "" if row["source_url"] is None else row["source_url"]
+            f.write(f"{row['source']},{row['value']},{row['unit']},{notes},{source_url}\n")
+
+    # structure.sdf
+    props: Dict[str, Any] = {
+        "CID": "" if metadata["cid"] is None else str(metadata["cid"]),
+        "IUPAC": metadata["iupac_name"] or "",
     }
-    csv_path = results_dir / "summary.csv"
-    if csv_row["cid"] or csv_row["iupac_name"]:
-        write_csv(csv_row, csv_path)
+    sdf_path = os.path.join(out_dir, "structure.sdf")
+    smiles_to_sdf(metadata["input_smiles"], sdf_path, props=props)
 
-    manifest = {
-        "compound_dir": str(compound_dir),
-        "sdf": str(sdf_path),
-        "json": str(json_path),
-        "csv": str(csv_path),
-        "props": props,
-    }
-    # Also write a manifest for quick inspection
-    write_json(manifest, compound_dir / "manifest.json")
-    return manifest
+    return out_dir

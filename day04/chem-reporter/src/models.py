@@ -1,15 +1,18 @@
 # src/models.py
+# src/models.py
 from __future__ import annotations
-from dataclasses import dataclass, field, asdict
+from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Optional, List, Dict, Any
 
 @dataclass
 class MeltingPoint:
-    value: Optional[float]          # in Celsius if possible if not none
-    unit: Optional[str]             # es. "°C", "K" (just as it was fetched)
-    notes: Optional[str] = None     # commenti/condizioni riportate dalla fonte
-    source_url: Optional[str] = None
+    # Keep textual value (may contain ranges/notes like "134–136 °C")
+    value: Optional[str]
+    unit: Optional[str] = None          # often empty because unit is in value
+    source: str = "PubChem PUG-View"
+    notes: Optional[str] = None
+    source_url: Optional[str] = None    # optional, for future use
 
 @dataclass
 class Result:
@@ -17,8 +20,12 @@ class Result:
     cid: Optional[int] = None
     iupac_name: Optional[str] = None
     melting_points: List[MeltingPoint] = field(default_factory=list)
-    fetched_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
-    sources: List[str] = field(default_factory=list)  # URL visitated
+
+    # Match what pubchem.resolve builds (created_at as ISO string; sources as dict)
+    sources: Dict[str, str] = field(default_factory=dict)
+    created_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+
+    # Keep optional diagnostics compatible with existing code
     errors: List[str] = field(default_factory=list)
 
     def to_dict(self) -> Dict[str, Any]:
@@ -27,7 +34,7 @@ class Result:
             "cid": self.cid,
             "iupac_name": self.iupac_name,
             "melting_points": [vars(mp) for mp in self.melting_points],
-            "fetched_at": self.fetched_at.isoformat(),
-            "sources": list(self.sources),
+            "created_at": self.created_at,
+            "sources": dict(self.sources),
             "errors": list(self.errors),
         }
