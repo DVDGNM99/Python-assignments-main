@@ -1,0 +1,13 @@
+name: CI
+on: [push]
+jobs:
+  test:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup conda
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          environment-file: environment.yml
+      - name: Run tests
+        run: pytest -q

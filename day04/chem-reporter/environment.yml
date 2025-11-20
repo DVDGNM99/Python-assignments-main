@@ -1,0 +1,13 @@
+name: chem-reporter
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - rdkit
+  - pip
+  - pip:
+      - requests
+      - python-dotenv
+      - PySimpleGUI
+      - pytest
+      - pandas
