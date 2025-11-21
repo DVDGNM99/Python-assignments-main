@@ -12,6 +12,7 @@ build/
 Italian_Notes04.md
 italian_README.md
 vecchia_roadmap.txt
+roadmap_project.txt
 
 # Ignore specific scripts and folders in chem-reporter
 chem-reporter/bootstrap_ignore.bat
