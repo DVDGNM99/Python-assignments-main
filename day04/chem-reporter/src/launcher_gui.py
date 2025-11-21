@@ -3,6 +3,10 @@ import subprocess, os, threading
 from pathlib import Path
 import tkinter as tk
 from tkinter import filedialog, messagebox
+# --- at top of src/launcher_gui.py ---
+import logging
+logging.basicConfig(level=logging.INFO, format='[%(levelname)s] %(message)s')
+
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 SCRIPTS = PROJECT_ROOT / "scripts"

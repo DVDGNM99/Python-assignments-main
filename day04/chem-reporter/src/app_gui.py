@@ -7,7 +7,9 @@ import traceback
 
 from src.pubchem import resolve
 from src.io_utils import write_outputs
-
+# at top of src/app_gui.py
+import logging
+logging.basicConfig(level=logging.INFO, format='[%(levelname)s] %(message)s')
 
 HELP_TEXT = (
     "Enter a SMILES string and click Search.\n"

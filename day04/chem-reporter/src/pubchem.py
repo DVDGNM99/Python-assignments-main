@@ -28,10 +28,11 @@ from urllib.parse import quote
 import re
 import unicodedata
 
-import requests
+import time, logging, requests
 
 from .models import Result, MeltingPoint
-from .config import HTTP_TIMEOUT, USER_AGENT
+from .config import TIMEOUT_SECONDS, USER_AGENT
+
 
 # ------------------------------------------------------------------
 # Text normalization & numeric parsing
@@ -119,13 +120,27 @@ def _norm_key(vals_c: list[float]) -> tuple:
 
 PUG_BASE = "https://pubchem.ncbi.nlm.nih.gov/rest/pug"
 PUG_VIEW_BASE = "https://pubchem.ncbi.nlm.nih.gov/rest/pug_view"
+logger = logging.getLogger(__name__)
 
-def _get(url: str) -> Dict[str, Any]:
-    """HTTP GET -> JSON, raising on HTTP errors; uses global timeout/UA."""
-    resp = requests.get(url, timeout=HTTP_TIMEOUT, headers={"User-Agent": USER_AGENT})
-    resp.raise_for_status()
-    return resp.json()
-
+def _get(url: str, params: dict | None = None, *,
+         timeout: int = TIMEOUT_SECONDS, max_retries: int = 3, backoff: float = 0.6) -> requests.Response:
+    """
+    Lightweight GET with automatic retry/backoff and console logging.
+    Raises the last exception if all attempts fail.
+    """
+    last_err = None
+    for attempt in range(1, max_retries + 1):
+        try:
+            r = requests.get(url, params=params, timeout=timeout, headers={"User-Agent": USER_AGENT})
+            r.raise_for_status()
+            logger.info("GET OK: %s", url)
+            return r.json()
+        except (requests.ConnectionError, requests.Timeout, requests.HTTPError) as e:
+            last_err = e
+            logger.warning("GET failed (%s/%s): %s", attempt, max_retries, e)
+            if attempt < max_retries:
+                time.sleep(backoff * (2 ** (attempt - 1)))
+    raise last_err
 # ------------------------------------------------------------------
 # PUG-View traversal helpers
 # ------------------------------------------------------------------
@@ -236,6 +251,12 @@ def _extract_melting_points(view_json: Dict[str, Any]) -> List[MeltingPoint]:
 
     results.sort(key=lambda mp: _center(mp.value))
     return results
+def _extract_melting_point(view_json: Dict[str, Any]) -> List[str]:
+    """Adapter for tests: return only the human-readable strings."""
+    return [mp.value for mp in _extract_melting_points(view_json)]
+
+# opzionale: alias pubblico, se altrove serve senza underscore
+extract_melting_point = _extract_melting_point
 
 # ------------------------------------------------------------------
 # High-level fetch utilities

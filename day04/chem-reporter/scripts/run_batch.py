@@ -14,6 +14,9 @@ from src.rdkit_utils import validate_smiles
 from src.pubchem import resolve
 from src.io_utils import write_outputs
 from src.models import Result
+# at top of scripts/run_batch.py
+import logging
+logging.basicConfig(level=logging.INFO, format='[%(levelname)s] %(message)s')
 
 def process_csv(input_csv: Path, results_dir: Path) -> Path:
     results_dir.mkdir(parents=True, exist_ok=True)
