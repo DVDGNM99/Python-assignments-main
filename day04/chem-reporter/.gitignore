@@ -8,3 +8,11 @@ dist/
 build/
 *.egg-info/
 .rdkit_cache/
+# Ignore files not needed in repo
+Italian_Notes04.md
+italian_README.md
+vecchia_roadmap.txt
+
+# Ignore specific scripts and folders in chem-reporter
+chem-reporter/bootstrap_ignore.bat
+chem-reporter/tools/
