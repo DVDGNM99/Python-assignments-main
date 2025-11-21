@@ -19,6 +19,7 @@ class Result:
     input_smiles: str
     cid: Optional[int] = None
     iupac_name: Optional[str] = None
+    preferred_name: Optional[str] = None
     melting_points: List[MeltingPoint] = field(default_factory=list)
 
     # Match what pubchem.resolve builds (created_at as ISO string; sources as dict)

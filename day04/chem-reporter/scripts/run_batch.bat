@@ -1,9 +1,13 @@
-@echo off
-setlocal
-if "%~1"=="" (
-  echo Usage: run_batch.bat path\to\input.csv
-  exit /b 1
-)
-call conda activate chem-reporter
-python scripts\run_batch.py "%~1" --results results
-endlocal
+@echo on
+REM === Activate your conda env ===
+call "C:\Users\David\miniforge3\condabin\conda.bat" activate chem-reporter
+
+REM === Go to project root ===
+cd /d "C:\Python-assignments-main\day04\chem-reporter"
+
+REM === Launch batch processing script ===
+set PYTHONUTF8=1
+python -X dev -u scripts\run_batch.py %*
+echo Exit code: %ERRORLEVEL%
+
+pause

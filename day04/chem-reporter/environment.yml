@@ -8,6 +8,5 @@ dependencies:
   - pip:
       - requests
       - python-dotenv
-      - PySimpleGUI
       - pytest
       - pandas

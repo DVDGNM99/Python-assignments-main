@@ -2,13 +2,12 @@
 # src/io_utils.py
 # src/io_utils.py
 from __future__ import annotations
-
 import json
 import os
 from datetime import datetime
 from typing import Any, Dict, Iterable, Optional
-
 from .rdkit_utils import smiles_to_sdf
+
 
 # Try to import your dataclasses, but keep the code robust if fields differ
 try:
@@ -28,15 +27,28 @@ def safe_name(text: str) -> str:
 
 def _result_folder_name(result: Any) -> str:
     """
-    Prefer IUPAC name; otherwise use a shortened SMILES.
+    Choose a human-friendly folder name:
+      1) preferred_name (PubChem Title / common name)
+      2) iupac_name
+      3) CID_{cid}
+      4) shortened SMILES
     """
+    preferred = getattr(result, "preferred_name", None)
+    if preferred and str(preferred).strip():
+        return safe_name(preferred)
+
     iupac = getattr(result, "iupac_name", None)
-    if iupac:
+    if iupac and str(iupac).strip():
         return safe_name(iupac)
+
+    cid = getattr(result, "cid", None)
+    if cid is not None:
+        return safe_name(f"CID_{cid}")
 
     smi = getattr(result, "input_smiles", "") or ""
     smi = smi if len(smi) <= 40 else smi[:40] + "..."
     return safe_name(smi or "compound")
+
 
 
 def _ensure_dir(path: str) -> None:
@@ -122,6 +134,7 @@ def write_outputs(result: Any, base_dir: str = "results") -> str:
         "input_smiles": getattr(result, "input_smiles", ""),
         "cid": getattr(result, "cid", None),
         "iupac_name": getattr(result, "iupac_name", None),
+        "preferred_name": getattr(result, "preferred_name", None),  
         "sources": _coerce_sources(getattr(result, "sources", None)),
         "melting_points": list(_iter_melting_points(getattr(result, "melting_points", None))),
         "errors": getattr(result, "errors", None),

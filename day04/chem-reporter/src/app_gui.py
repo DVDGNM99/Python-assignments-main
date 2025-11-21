@@ -1,4 +1,4 @@
-# src/app_gui_tk.py
+# src/app_gui.py
 from __future__ import annotations
 
 import tkinter as tk
