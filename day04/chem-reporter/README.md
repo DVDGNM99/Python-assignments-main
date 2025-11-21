@@ -1,6 +1,14 @@
 # Chem-Reporter (MVP)
 
-Windows-ready chemistry utility for resolving SMILES via PubChem and extracting melting points (°C).
+Windows-ready chemistry utility for resolving SMILES via PubChem and extracting melting points (°C). with a feature to visualize molecules
+---
+### 2D
+
+- ![imagine](https://github.com/DVDGNM99/Python-assignments-main/blob/main/Images/2D.png)
+---
+### 3D interactive
+
+- ![imagine](https://github.com/DVDGNM99/Python-assignments-main/blob/main/Images/3D.png)
 
 ---
 ## Quick start (one click)
@@ -25,6 +33,7 @@ Starts the Unified Launcher GUI.
 If Windows warns about execution policy, right-click the .bat → Run anyway.
 The Desktop link will appear under your real Desktop path (often C:\Users\<you>\OneDrive\Desktop).
 ```
+
 ## ⚙️ Setup
 
 Requires:
@@ -51,6 +60,24 @@ scripts\run_batch.bat input\test_molecules.csv
 ```bash
 scripts\run_launcher.bat
 ```
+---
+## GUI launcher
+- choose option manually or fetch CSV
+
+-![imagine](https://github.com/DVDGNM99/Python-assignments-main/blob/main/Images/chem_GUI_1.png)
+---
+## Manual
+- paste a SMILES structure in the box and press search
+- example SMILES: aspirin: CC(=O)OC1=CC=CC=C1C(=O)O 
+
+-![imagine](https://github.com/DVDGNM99/Python-assignments-main/blob/main/Images/chem_GUI_insertmanual.png)
+---
+## Fetch a CSV 
+- in the folder: input you can find an example csv
+
+-![imagine](https://github.com/DVDGNM99/Python-assignments-main/blob/main/Images/chem_GUI_csv.png)
+---
+
 ## 🧩 Output structure
 Each compound folder includes:
 ```txt
@@ -60,6 +87,18 @@ results/<compound>/
   structure.sdf
   IUPAC.txt
 ```
+---
+## Using structure.sdf from the output visualize your molecules
+- open ```visualize_molecule.ipynb``` and run the cells
+---
+### 2D molecule 
+
+- ![imagine](https://github.com/DVDGNM99/Python-assignments-main/blob/main/Images/2D.png)
+---
+### 3D molecule
+
+- ![imagine](https://github.com/DVDGNM99/Python-assignments-main/blob/main/Images/3D.png)
+---
 A global summary.csv aggregates all results.
 ## 🧪 Offline tests
 Offline unit tests use cached PubChem JSONs (aspirin/caffeine) to verify parsing.
