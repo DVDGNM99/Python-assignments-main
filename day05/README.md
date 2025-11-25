@@ -18,7 +18,7 @@ Snake game using the Pygame library.
 
 3.  Activate the environment: conda activate game
 
-4.  Run the game script: C:\Python-assignments-main\day05> python snake.py
+4.  Run the game script: python snake.py
 
 # c. Gameplay
 
