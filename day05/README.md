@@ -1,5 +1,5 @@
 # Snake Game using Pygame
-![imagine]https://github.com/DVDGNM99/Python-assignments-main/blob/main/Images/snake.png)
+![imagine](https://github.com/DVDGNM99/Python-assignments-main/blob/main/Images/snake.png)
 
 This project provides a simple Python implementation of the classic
 Snake game using the Pygame library.
