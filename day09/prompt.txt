@@ -1,0 +1,291 @@
+Goal: write a program that, given:
+
+day09/subjects.txt (submission logs)
+
+README (contains deadlines)
+produces a useful report with:
+
+students who did not submit certain assignments
+
+students who submitted after the deadline (late)
+
+distribution of submission time relative to the deadline
+
+“popularity” of formats/assignments (how many submissions per type)
+
+extra: ambiguous cases (weird titles), duplicates, multiple submissions
+
+Language: Python 3.11+ (Node/TS is also fine if you prefer, but pick one and stay consistent).
+Output: report in Markdown + CSV (optional HTML). CLI with arguments.
+
+A) UNDERSTANDING INPUTS AND SPEC
+1) subjects.txt
+
+It is a TSV (tab-separated). Each row contains at least:
+(a) numeric_id
+(b) status: OPEN or CLOSED
+(c) title: strings like "Day08 by Name", "Final Project proposal by Name", etc.
+(d) a field often empty
+(e) timestamp in ISO8601 with Z (UTC), e.g. 2026-01-04T09:10:31Z
+
+Do not assume consistent spacing/case: "Day08", "day08", "Day 08", "Day 05 and 06", etc.
+
+There may be “broken” lines or missing tabs: handle robustly (log a warning + skip or best-effort).
+
+2) README
+
+Contains deadlines for assignments (Day01, Day02, …, Day08, Final Project proposal, etc.).
+
+Implement a robust parser:
+
+Look for patterns like:
+
+"Day01 ... deadline ... 2025-11-05 23:59"
+
+"Final Project Proposal - due: 2025-12-13T18:30Z"
+
+possible bullets / Markdown tables
+
+If you can’t extract automatically, support an optional JSON/YAML file with deadlines (fallback).
+
+B) DATA MODEL (design properly before coding)
+
+Define dataclass/struct:
+
+Submission
+
+id: int
+
+status: str (OPEN/CLOSED)
+
+raw_title: str
+
+submitted_at: datetime (timezone-aware, UTC)
+
+student_name_raw: str | None
+
+student_name_norm: str | None
+
+assignment_raw: str | None
+
+assignment_norm: str | None
+
+assignment_tags: set[str] (e.g. {"day08"}, {"final_project_proposal"}, etc.)
+
+parse_warnings: list[str]
+
+Deadline
+
+assignment_norm: str
+
+due_at: datetime (timezone-aware; standardize to UTC)
+
+raw_line: str (for debugging)
+
+ReportStats
+
+missing_by_assignment: dict[assignment_norm, list[student]]
+
+late_submissions: list[{student, assignment, submitted_at, due_at, delta}]
+
+deltas_by_assignment: dict[assignment_norm, list[timedelta]]
+
+popularity: dict[assignment_norm, int]
+
+anomalies: list[str] (unparseable titles, duplicates, etc.)
+
+C) NORMALIZATION AND PARSING (the “nasty” part)
+1) TSV parsing
+
+Read file as UTF-8.
+
+Split on '\t'. If fewer than 4–5 fields, try a “smart” split or mark as anomaly.
+
+Timestamp: parse ISO8601 with 'Z' (UTC).
+
+Preserve raw_title.
+
+2) Extract student and assignment from the title
+
+Main patterns:
+
+"... by <Name>"
+
+"... - <Name>" or "... <Name>" (fallback)
+
+Normalize name:
+
+trim, collapse spaces, title case (but keep original too)
+
+handle hyphens/apostrophes and case differences ("adi moses" → "Adi Moses")
+
+Extract assignment:
+
+recognize "Day" + number: Day01..Day09
+
+accept "Day1", "Day 1", "day01", "DAY02"
+
+recognize "Final Project proposal" / "Final Project Proposal" (case-insensitive)
+
+recognize combinations: "Day 05 and 06" ⇒ tags {"day05","day06"} and/or assignment_norm = "day05+day06"
+
+Create a function canonicalize_assignment(title) -> set[assignment_norm].
+
+Example: "day 08 and proposal for final project-Name" ⇒ {"day08","final_project_proposal"}
+
+3) Duplicates and multiple versions
+
+A student can have multiple submissions for the same assignment:
+
+default strategy: keep the most recent submission (or the first) and make it configurable:
+--dedupe latest|earliest|all
+
+Note: OPEN/CLOSED might indicate ticket state, not “submitted/not submitted”. Do not use it as the only truth; use presence of a submission.
+
+D) REPORT LOGIC
+1) Build the student list
+
+Derive it from all student_name_norm found in the file.
+
+(Optional) if README contains an official student list, use it as ground truth; otherwise use the derived one.
+
+2) “Missing submissions”
+
+For each assignment that has a deadline, list students who have no submission for that assignment.
+
+3) “Late submissions”
+
+For each submission (deduplicated according to option):
+
+find the deadline for its assignment_norm
+
+if submitted_at > due_at ⇒ late, compute delta (timedelta)
+
+For multi-tag assignments (e.g. "day05+day06"): evaluate each tag separately.
+
+4) Distribution of submission time vs deadline
+
+For each assignment:
+
+delta = submitted_at - due_at
+
+store deltas (negative = early, positive = late)
+
+Produce:
+
+histogram (binning by hours or days)
+
+summary: median, mean, p90, %late
+
+(Optional) boxplot per assignment
+
+5) Popularity of formats/assignments
+
+Count how many submissions per assignment_norm (before or after dedupe; make configurable)
+
+Show top N and percentages.
+
+6) “Anomalies”
+
+Unparseable titles (student or assignment is None)
+
+Missing deadline for an assignment seen in the file
+
+Students with near-duplicate names (fuzzy suggestion: "Rachel Steinitz Eliyahu" vs "Rachel Steinitz-Eliyahu")
+
+E) CLI AND OUTPUT
+
+Implement a CLI (argparse/typer):
+
+--subjects day09/subjects.txt
+
+--readme README.md
+
+--deadlines-json deadlines.json (fallback)
+
+--out report.md (default)
+
+--out-dir ./out (for CSV/PNG)
+
+--tz Asia/Jerusalem (rendering only; calculations in UTC)
+
+--dedupe latest|earliest|all
+
+--include-open / --include-closed (optional filters, default: both)
+
+--plots (generate PNG charts)
+
+Suggested outputs:
+
+report.md with sections:
+
+Overview (general counts)
+
+Missing per assignment (table)
+
+Late submissions (table sorted by lateness)
+
+Delta stats per assignment (median/mean/p90/%late)
+
+Popularity (table + chart)
+
+Anomalies (list)
+
+CSV:
+
+submissions_clean.csv
+
+missing.csv
+
+late.csv
+
+deltas.csv
+
+PNG:
+
+overall histogram
+
+histogram per assignment (optional)
+
+popularity bar chart
+
+F) QUALITY: TESTS + VALIDATION
+1) Unit tests (pytest)
+
+TSV parsing with valid and broken lines
+
+title parsing cases:
+
+"Day08 by Name"
+
+"day 08 by Name"
+
+"Day 05 and 06 by Name"
+
+"Final Project proposal by Name"
+
+"day 08 and proposal for final project-Name"
+
+assignment canonicalization
+
+late calculation with timezone
+
+dedupe (latest/earliest)
+
+2) Runtime sanity checks
+
+if README yields no deadlines ⇒ warning + ask to use --deadlines-json
+
+if an assignment appears in the file but not in deadlines ⇒ flag in anomalies
+
+G) IMPLEMENTATION PLAN (incremental steps)
+
+Step 1: parse subjects.txt ⇒ list[Submission] (with warnings)
+Step 2: parse README ⇒ dict[assignment_norm] -> Deadline (plus JSON fallback)
+Step 3: normalization + canonicalization (student + assignment tags)
+Step 4: aggregations (missing/late/deltas/popularity)
+Step 5: render report.md + CSV
+Step 6 (optional): charts (matplotlib)
+Step 7: tests + Makefile/poetry/requirements
+
+Delivery: provide the complete code (separate modules), with a usage README and example runs.
